@@ -16,8 +16,10 @@ function App() {
             id: nanoid(),
         };
 
-        setTodoList([...todoList, newTodo]);
-        setTodo("");
+        if (todo !== "") {
+            setTodoList([...todoList, newTodo]);
+            setTodo("");
+        }
     }
 
     function removeTodo(id) {
