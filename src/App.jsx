@@ -1,5 +1,7 @@
 import "./index.css";
 import React, { useState } from "react";
+import { nanoid } from "nanoid";
+import TaskList from "./components/TaskList";
 
 function App() {
     const [todo, setTodo] = useState("");
@@ -7,9 +9,11 @@ function App() {
 
     function addTodo(event) {
         event.preventDefault();
+
         const newTodo = {
             todo: todo,
-            id: Math.random(),
+            isDone: false,
+            id: nanoid(),
         };
 
         setTodoList([...todoList, newTodo]);
@@ -18,8 +22,16 @@ function App() {
 
     function removeTodo(id) {
         const newList = todoList.filter((list) => list.id !== id);
-
         setTodoList(newList);
+    }
+
+    // When the task is done
+    function checkTask(id) {
+        setTodoList((prevList) =>
+            prevList.map((todo) =>
+                todo.id === id ? { ...todo, isDone: !todo.isDone } : todo
+            )
+        );
     }
 
     return (
@@ -32,25 +44,16 @@ function App() {
                     onChange={(e) => setTodo(e.target.value)}
                 />
                 <button>
-                    <i class="fa-solid fa-plus"></i>
+                    <i className="fa-solid fa-plus"></i>
                 </button>
             </form>
 
             <div className="task-container">
-                {todoList.map((list) => (
-                    <div className="task" key={list.id}>
-                        <p>
-                            <i class="fa-solid fa-circle"></i>
-                            {list.todo}
-                        </p>
-                        <span>
-                            <i class="fa-solid fa-check"></i>
-                            <button onClick={() => removeTodo(list.id)}>
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                        </span>
-                    </div>
-                ))}
+                <TaskList
+                    todoList={todoList}
+                    checkTask={checkTask}
+                    removeTodo={removeTodo}
+                />
             </div>
         </div>
     );
